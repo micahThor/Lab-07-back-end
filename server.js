@@ -37,6 +37,8 @@ function Forcast(forecast, time) {
   }
 }) */
 
+let longitude = '';
+let latitude = '';
 
 app.get('/location', (req, res) => {
 
@@ -57,19 +59,25 @@ app.get('/location', (req, res) => {
 
 });
 
-app.get('/weather', (request, response) => {
-  const weatherData = require('./data/darksky.json');
-  const dailyWeatherData = weatherData.daily;
-  const dailyData = dailyWeatherData.data;
+app.get('/weather', (req, res) => {
+  
 
-  let nextForecast = dailyData.map( (val, index, array) => {
-    let nextForeCastObj = new Forcast(val.summary, val.time);
-    return nextForeCastObj;
+  superagent.get(`https://api.darksky.net/forecast/${process.env.WEATHER_API_KEY}/${req.query.data.latitude},${req.query.data.longitude}`).then(response => {
+    
+    let dailyData = response.body.daily.data;
+    
+    let nextForecast = dailyData.map( (val, index, array) => {
+      let nextForeCastObj = new Forcast(val.summary, val.time);
+      return nextForeCastObj;
+    });
+    
+    res.send(nextForecast);
+
   });
 
-  response.send(nextForecast);
 
-})
+
+});
 
 app.listen(PORT, () => {
   console.log(`App is on PORT: ${PORT}`);
