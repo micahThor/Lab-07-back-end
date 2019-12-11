@@ -33,9 +33,12 @@ let latitude = '';
 
 app.get('/location', (req, res) => {
 
-  superagent.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${req.query.data}&key=${process.env.GEOCODE_API_KEY}`).then(response => {
+  let url = `https://maps.googleapis.com/maps/api/geocode/json?address=${req.query.data}&key=${process.env.GEOCODE_API_KEY}`;
+
+  superagent.get(url).then( (response) => {
 
     const geoDataArray = response.body.results;
+    console.log('*********************************GEODATA', geoDataArray)
     const search_query = geoDataArray[0].address_components[0].short_name;
     const formatted_query = geoDataArray[0].formatted_address;
     const lat = geoDataArray[0].geometry.location.lat;
