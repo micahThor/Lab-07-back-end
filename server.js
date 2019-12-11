@@ -40,15 +40,14 @@ app.get('/weather', (request, response) => {
   const weatherData = require('./data/darksky.json');
   const dailyWeatherData = weatherData.daily;
   const dailyData = dailyWeatherData.data;
-  const weatherArr = [];
-  dailyData.forEach(val => {
-    weatherArr.push(new Forcast(val.summary, val.time));
-  })
-  if (request.query.data.search_query === newData[0].search_query) {
-    response.send(weatherArr);
-  } else {
-    throw new Error('Sorry, something went wrong');
-  }
+  
+  let nextForecast = dailyData.map( (val, index, array) => {
+    let nextForeCastObj = new Forcast(val.summary, val.time);
+    return nextForeCastObj;
+  });
+
+  response.send(nextForecast);
+
 })
 
 app.listen(PORT, () => {
