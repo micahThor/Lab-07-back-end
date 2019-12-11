@@ -21,21 +21,12 @@ function Forcast(forecast, time) {
   this.time = new Date(time * 1000).toDateString();
 }
 
-/* app.get('/location', (request, response) => {
-  const newData = [];
-  const geoData = require('./data/geo.json');
-  const geoDataResult = geoData.results[0];
-  const geoDataGeometry = geoDataResult.geometry;
-  const geoDataLocation = geoDataGeometry.location;
-
-  newData.push(new Geolocation(geoDataLocation.lat, geoDataLocation.lng, geoDataResult.formatted_address, geoDataResult.address_components[0].short_name.toLowerCase()));
-
-  if (request.query.data === newData[0].search_query) {
-    response.send(newData[0]);
-  } else if (request.query.data !== newData[0].search_query) {
-    throw new Error('Sorry, something went wrong');
-  }
-}) */
+function Event(link, name, date, summary) {
+  this.link = link,
+  this.name = name,
+  this.event_date = date,
+  this.summary = summary
+}
 
 let longitude = '';
 let latitude = '';
@@ -61,7 +52,6 @@ app.get('/location', (req, res) => {
 
 app.get('/weather', (req, res) => {
   
-
   superagent.get(`https://api.darksky.net/forecast/${process.env.WEATHER_API_KEY}/${req.query.data.latitude},${req.query.data.longitude}`).then(response => {
     
     let dailyData = response.body.daily.data;
@@ -72,12 +62,27 @@ app.get('/weather', (req, res) => {
     });
     
     res.send(nextForecast);
+  });
+});
+
+app.get('/events', (req, res) => {
+  
+  superagent.get(`http://api.eventful.com/json/events/search?location=${req.query.data.formatted_query}&app_key=${process.env.EVENTFUL_API_KEY}`).then(response => {
+    const eventfulJSON = JSON.parse(response.text);
+
+    const eventsArray = eventfulJSON.events.event;
+    console.log(eventsArray);
+
+    const nextEvents = eventsArray.map( (val, index, array) => {
+      let nextEventObj = new Event(val.url, val.venue_name, val.start_time, val.title);
+      return nextEventObj;
+    });
+
+    res.send(nextEvents);
 
   });
-
-
-
 });
+
 
 app.listen(PORT, () => {
   console.log(`App is on PORT: ${PORT}`);
