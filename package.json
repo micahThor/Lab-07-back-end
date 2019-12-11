@@ -9,13 +9,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/phongvdoan/lab-06.git"
+    "url": "git+https://github.com/micahThor/Lab-07-back-end"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/phongvdoan/lab-06/issues"
+    "url": "https://github.com/micahThor/Lab-07-back-end/issues"
   },
   "homepage": "https://github.com/phongvdoan/lab-06#readme",
   "dependencies": {
