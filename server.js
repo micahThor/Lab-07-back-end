@@ -71,7 +71,6 @@ app.get('/events', (req, res) => {
     const eventfulJSON = JSON.parse(response.text);
 
     const eventsArray = eventfulJSON.events.event;
-    console.log(eventsArray);
 
     const nextEvents = eventsArray.map( (val, index, array) => {
       let nextEventObj = new Event(val.url, val.venue_name, val.start_time, val.title);
