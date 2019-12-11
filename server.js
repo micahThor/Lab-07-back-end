@@ -48,6 +48,8 @@ app.get('/location', (req, res) => {
 
     res.send(nextLocation);
 
+  }).catch(error => {
+    console.log('ERROR ON LOCATIONS ROUTE: ', error);
   });
 
 
