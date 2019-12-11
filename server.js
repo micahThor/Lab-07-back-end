@@ -2,6 +2,7 @@
 const PORT = process.env.PORT || 3000;
 const express = require('express');
 const cors = require('cors');
+const superagent = require('superagent');
 
 const app = express();
 require('dotenv').config();
@@ -20,7 +21,7 @@ function Forcast(forecast, time) {
   this.time = new Date(time * 1000).toDateString();
 }
 
-app.get('/location', (request, response) => {
+/* app.get('/location', (request, response) => {
   const newData = [];
   const geoData = require('./data/geo.json');
   const geoDataResult = geoData.results[0];
@@ -34,13 +35,33 @@ app.get('/location', (request, response) => {
   } else if (request.query.data !== newData[0].search_query) {
     throw new Error('Sorry, something went wrong');
   }
-})
+}) */
+
+
+app.get('/location', (req, res) => {
+
+  superagent.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${req.query.data}&key=${process.env.GEOCODE_API_KEY}`).then(response => {
+
+    const geoDataArray = response.body.results;
+    const search_query = geoDataArray[0].address_components[0].short_name;
+    const formatted_query = geoDataArray[0].formatted_address;
+    const lat = geoDataArray[0].geometry.location.lat;
+    const lng = geoDataArray[0].geometry.location.lng;
+
+    const nextLocation = new Geolocation(lat, lng, formatted_query, search_query);
+
+    res.send(nextLocation);
+
+  });
+
+
+});
 
 app.get('/weather', (request, response) => {
   const weatherData = require('./data/darksky.json');
   const dailyWeatherData = weatherData.daily;
   const dailyData = dailyWeatherData.data;
-  
+
   let nextForecast = dailyData.map( (val, index, array) => {
     let nextForeCastObj = new Forcast(val.summary, val.time);
     return nextForeCastObj;
