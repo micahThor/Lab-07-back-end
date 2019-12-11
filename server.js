@@ -5,8 +5,8 @@ const cors = require('cors');
 const superagent = require('superagent');
 
 const app = express();
-require('dotenv').config();
 app.use( cors() );
+require('dotenv').config();
 
 
 function Geolocation(latitude, longitude, formatted_address, search_query) {
