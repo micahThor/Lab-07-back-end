@@ -28,8 +28,6 @@ function Event(link, name, date, summary) {
   this.summary = summary
 }
 
-let longitude = '';
-let latitude = '';
 
 app.get('/location', (req, res) => {
 
@@ -38,7 +36,6 @@ app.get('/location', (req, res) => {
   superagent.get(url).then( (response) => {
 
     const geoDataArray = response.body.results;
-    console.log('*********************************GEODATA', geoDataArray)
     const search_query = geoDataArray[0].address_components[0].short_name;
     const formatted_query = geoDataArray[0].formatted_address;
     const lat = geoDataArray[0].geometry.location.lat;
